@@ -8,6 +8,7 @@ import Constants from "../utils/Constants";
 import { Transcriber } from "../hooks/useTranscriber";
 import Progress from "./Progress";
 import AudioRecorder from "./AudioRecorder";
+// Función para convertir una cadena de texto a "Title Case"
 
 function titleCase(str: string) {
     str = str.toLowerCase();
@@ -18,7 +19,7 @@ function titleCase(str: string) {
         .join("");
 }
 
-// List of supported languages:
+// Lista de idiomas compatibles
 // https://help.openai.com/en/articles/7031512-whisper-api-faq
 // https://github.com/openai/whisper/blob/248b6cb124225dd263bb9bd32d060b6517e067f8/whisper/tokenizer.py#L79
 const LANGUAGES = {
@@ -128,6 +129,7 @@ export enum AudioSource {
     FILE = "FILE",
     RECORDING = "RECORDING",
 }
+// Componente principal para gestionar el audio
 
 export function AudioManager(props: { transcriber: Transcriber }) {
     const [progress, setProgress] = useState<number | undefined>(undefined);
@@ -145,11 +147,13 @@ export function AudioManager(props: { transcriber: Transcriber }) {
     >(undefined);
 
     const isAudioLoading = progress !== undefined;
+    // Función para reiniciar los datos de audio
 
     const resetAudio = () => {
         setAudioData(undefined);
         setAudioDownloadUrl(undefined);
     };
+    // Establecer el audio desde una descarga
 
     const setAudioFromDownload = async (
         data: ArrayBuffer,
@@ -169,6 +173,7 @@ export function AudioManager(props: { transcriber: Transcriber }) {
             mimeType: mimeType,
         });
     };
+    // Establecer el audio desde una grabación
 
     const setAudioFromRecording = async (data: Blob) => {
         resetAudio();
@@ -194,6 +199,7 @@ export function AudioManager(props: { transcriber: Transcriber }) {
         };
         fileReader.readAsArrayBuffer(data);
     };
+    // Descargar el audio desde una URL
 
     const downloadAudioFromUrl = async (
         requestAbortController: AbortController,
@@ -226,7 +232,7 @@ export function AudioManager(props: { transcriber: Transcriber }) {
         }
     };
 
-    // When URL changes, download audio
+// Descargar el audio cuando cambia la URL
     useEffect(() => {
         if (audioDownloadUrl) {
             const requestAbortController = new AbortController();
@@ -326,6 +332,7 @@ export function AudioManager(props: { transcriber: Transcriber }) {
         </>
     );
 }
+// Componente para el modal de configuración
 
 function SettingsTile(props: {
     icon: JSX.Element;
@@ -358,6 +365,7 @@ function SettingsTile(props: {
         </div>
     );
 }
+// Componente para el contenido del modal de configuración
 
 function SettingsModal(props: {
     show: boolean;
@@ -368,13 +376,13 @@ function SettingsModal(props: {
     const names = Object.values(LANGUAGES).map(titleCase);
 
     const models = {
-        // Original checkpoints
+        // Checkpoints originales
         'Xenova/whisper-tiny': [41, 152],
         'Xenova/whisper-base': [77, 291],
         'Xenova/whisper-small': [249],
-        'Xenova/whisper-medium': [776],
+        'Xenova/whisper-medium': [776],  //revisar que onda con este modelo
 
-        // Distil Whisper (English-only)
+        // Distil Whisper (solo en inglés)
         'distil-whisper/distil-medium.en': [402],
         'distil-whisper/distil-large-v2': [767],
     };
@@ -489,14 +497,17 @@ function SettingsModal(props: {
         />
     );
 }
+// Componente para la barra vertical
 
 function VerticalBar() {
     return <div className='w-[1px] bg-slate-200'></div>;
 }
+// Componente para la barra de datos de audio
 
 function AudioDataBar(props: { progress: number }) {
     return <ProgressBar progress={`${Math.round(props.progress * 100)}%`} />;
 }
+// Componente para la barra de progreso
 
 function ProgressBar(props: { progress: string }) {
     return (
@@ -508,6 +519,7 @@ function ProgressBar(props: { progress: string }) {
         </div>
     );
 }
+// Componente para el tile de URL
 
 function UrlTile(props: {
     icon: JSX.Element;
@@ -536,6 +548,7 @@ function UrlTile(props: {
         </>
     );
 }
+// Componente para el modal de URL
 
 function UrlModal(props: {
     show: boolean;
@@ -568,6 +581,7 @@ function UrlModal(props: {
         />
     );
 }
+// Componente para el tile de archivo
 
 function FileTile(props: {
     icon: JSX.Element;
